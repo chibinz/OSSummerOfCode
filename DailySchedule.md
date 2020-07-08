@@ -23,3 +23,6 @@ threads, conversions 这两部分因为之前用的不多花的时间比较长�
 
 ## Day 5 7.7
 一天都在上课，回到寝室差不多就要睡觉了。赶紧用Rust写了两道Learn C the Hard Way的练习题。前面主要是格式化输出和变量类型，没有控制流，所以很快就写完了。
+
+## Day 6 7.8
+完成了8道练习题。对于Rust语法上面没有啥理解的困难，主要是体会Rust和C Convention上的区别。以数组遍历为例，在C里面很自然的一种写法就是`for (int i = 0; i < len; i++) ...`。 但在Rust里面如果实现了Iterator这个trait的话更鼓励使用iterators，`for arg in std::env::args() {...}`, 最直观的好处有两个，一可读性更高了，二没有index不需要每次都做bounds check，效率变高了。当然好处不止这一些，按照C的写法来写Rust不是不可以，只是Bad Style。Rust是一个多范式语言，其中不少函数式编程的特性可以看出来有sml的影子，map, fold, reduce, 还有match，以及||closure，对array/vector/list等线性数据结构的元素做一些简单的操作完全没有必要写for loop，一是容易出错，二是map这样的函数更方便compiler做优化（vectorize）。Match对于乍接触Rust的C程序员来说就是switch语句，但事实上要强大的多，switch仅限于整型（char，int，long...)，而match可以destruct tuples/structs，实现了PartialEq的可以直接match。就个人经历而言，这个解决的最大痛点就是字符串也可以match了，方便很多。总之，学习过程中要注意两者的区别，不能写成Cish Rust。
