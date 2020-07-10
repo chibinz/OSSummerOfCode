@@ -24,3 +24,34 @@ threads, conversions 这两部分因为之前用的不多花的时间比较长�
 
 ## Day 7 7.9
 终于把15道练习题写完了。Learn C the Hard Way后面主要是写一些数据结构。由于Ownership系统的原因，在Rust里面写一个双向链表都是一个非常痛苦的过程。甚至有人专门出了一本书研究Rust写链表多种不同的方式。链表其实在操作系统中是一个非常重要的数据结构。pintos里面记录线程的active_list, block_list, sleep_list都是链表，链表的每个节点内嵌在thread结构体里面，这样就不需要动态分配内存了。而需要取到指向thread结构体指针的时候可以通过offset()宏计算链表节点field据结构体base的偏移量获得。当时第一次看到这种骚操作被震撼了，不得不佩服想出这种办法的人。Page Eviction中的second chance algorithm(evict by used/dirty bit)中也有用到链表。有些C的概念不能直接转换到Rust里面，比如Rust的lifetime，ownership还有array和slice。C里面的lifetime有automatic（stack上），static（全局等），还有heap上自己管理的，safe Rust的就复杂很多。C里面函数传数组(指针）往往还需要一个长度的参数，Rust则合二为一成了slice，确保不会有数组越界的情况。基于以上原因，ex8，ex22更多的参考了Rust By Example里面的练习。
+
+## Day 8 7.10
+今天给rCore-Tutorial提交了第一个pull requst，写了一个`dbg!`macro。这个宏还是蛮有用的，可以显示行号，文件名，同时返回变量的值，自己平时用的蛮多的。rCore因为不能用标准库所以默认没有实现这个宏。实现起来也不麻烦，也就几十行，简单的在println！上面做一些包装。看了一下lab-1这个branch好像也是已经写好了的代码，没有题目…… 感觉sbi调用可以用enum包装的更好一些。比如:
+```Rust
+enum SBICall {
+    SetTimer = 0,
+    ConsolePutChar = 1,
+    consoleGetChar = 2,
+    ...
+}
+
+// Cast enum to usize when needed
+
+or
+
+enum SBICall {
+    SetTimer(usize),
+    ConsolePutChar(u8),
+    ConsoleGetChar,
+}
+
+impl SBICall {
+    fn get_id(&self) -> usize {
+        match self {
+            ConsolePutChar(_) => 1,
+            ...
+        }
+    }
+}
+```
+由于SBI_SET_TIMER这一类global constant本质上是一个usize，调用sbi_call的时候可以传一些非法的值进去，运行时还需做检查。而如果用enum的话可以在编译时就杜绝这种可能性,同时enum有自己独立的namespace不用大写的SBI_ Prefix了。当然RISC-V的sbi本身就是用C定义的，这么做存在着过度包装的风险，可以开个issue问一问。明天前面的lab题目还不出来的话，只能先从后面的开始做起了。
