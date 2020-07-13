@@ -69,3 +69,49 @@ impl SBICall {
 > Tutorial里面其实讲的已经蛮详细的了，这里谈谈自己对free standing binary的理解。一个程序在硬盘上和内存中的储存方式是不同的，通常来说可执行文件更紧凑一些，而在内存中运行的程序松散一些，是被拉伸过的。比如ELF中bss段只存大小和起始地址，不存数据，因为在文件中放一大串0是没有意义的。把可执行文件加载到内存中的过程是由操作系统完成的，bss段会分配已经置零闲置的内存页。这通常没有什么问题，但是这一次是我们自己写操作系统，因此没有段的概念。kernel文件本来二进制表示什么样在bootloader(qemu)装载到内存中就是什么样。这也是为什么kernel.bin被叫做镜像。
 
 实验的代码和学习记录因为和DailySchedule没有太大关系，为了不污染commit记录，单独放在一个repository里面了。
+
+## Day 11 7.13
+完成了lab 1的实验与学习报告。这一部分因为riscv这个crate包装的已经很好了，所以代码量也不是很大，逻辑很清晰。写过程中遇到了一个很有意思的问题，因为interrupt.S大部分代码其实是在保存通用寄存器，所以不是很想一行一行的敲了，把rCore-Tutorial里面的interrupt.asm复制黏贴过来。结果运行的时候遇到了store exception，看来是往禁止的地方写了东西。仔细检查发现, 在保存context之前把sp和sscratch做了交换，sp指向了后面才会实现的内核栈，因此产生了exception。复制黏贴果然是一大bug来源，以后要慎之又慎。后面按照洛佳同学提出的方法把30个SAVE合成了一个loop，干净很多。
+
+```RISC-V
+# Essential for substitution %i
+.altmacro
+
+# length of general purpose registers in bytes
+.set reg_size, 8
+# No. of registers inside a context frame
+.set context_size, 34
+
+# Load register relative to sp
+.macro load reg, offset
+    ld  \reg, \offset * reg_size(sp)
+.endm
+
+.macro load_gp n
+    load    x\n, \n
+.endm
+
+...
+
+.global __restore
+__restore:
+    # Restore csr registers
+    load    t0, 32
+    load    t1, 33
+    csrw    sstatus, t0
+    csrw    sepc, t1
+
+    .set i, 3
+    .rept 29
+        load_gp %i
+        .set i, i + 1
+    .endr
+
+    # Restore ra and sp last
+    load    x1, 1
+    load    x2, 2
+
+    # Return to the address stored in sepc
+    sret
+```
+在相关的issue上面comment了一下，希望能有follow up。
