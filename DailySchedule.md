@@ -119,3 +119,6 @@ __restore:
 ## Day 12 7.14
 完成了lab 2实验部分，明天写报告。说实话对于PhysicalAddress这一个wrapper不是很满意，一个地址本质上就是一个usize。包装下来产生了很多boilerplate代码，对内部的usize做加减法还需要implement Add，Sub这样的trait。如果想要对usize这样的primitive实现dynamic dispatch的话，可以定义一个trait，然后为usize implement这个trait。Buddy System Allocator这一部分之前的os和算法课没有讲过，但是其实已经有现有的实现了，所以感觉没有必要再自己实现一个了。在教学用的toy system上面碎片化其实不是一个很大的问题，因为用的内存很少，不需要垃圾回收。lab2部分为了对FRAME_ALLOCATOR这个全局变量进行访问使用了spin::Mutex，在没有os支持下不知道是怎么实现的，很有可能是busy wait，被阻塞的线程会进入一个死循环。lazy_static的使用还不是特别清楚，明天得多花点时间。
 还预习了lab 3部分的实验，感觉难度上要比lab0/1大不少，还是需要多花一点功夫的。
+
+## Day 13 7.15
+完成了lab 2 writeup。逐渐明白kernel在内存中是怎样放置的了。从0x8000_0000开始先是OpenSBI的firmware，0x80020000会放置第一个程序，这也是为什么linker.ld里面kernel_base_address是0x80020000。kernel本身主要是两部分组成，最前面的是.text代码部分，除了我们自己写的代码之外还有Rust自己生成的一些库函数。之后是数据，.data和.rodata，都是初始值非零的变量，一个可写另一个不可写。最一部分是.bss段，虽然是.bss但并不能保证操作系统运行第一条指令时这一段内存是0。个人认为操作系统应该手动置零，但是不知道为什么现在没有置零但是依然能够正常运行。.bss段除了操作系统方便自己动态分配内存的一个堆HEAP之外还有其他的变量。用rust-objdump -x还能看到类似FRAME_ALLOCATOR被mangle后的字样。.bss段的终止地址也是kernel_end_address。物理页的分配在这之后开始，不过要对齐到4K，也就是16进制后三位是0x000。QEMU默认的dram大小是128MiB，理论上这块内存想干什么都可以。物理页可以从0x88000000开始分配，到0x87fff000，一次往前分配也是可以的。
