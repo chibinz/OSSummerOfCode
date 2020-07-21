@@ -32,42 +32,51 @@
 ## Day 0 7.2
 - 正式入群
 - rustlings
+
 今天刚把最后一门考试考完了。由于之前已经写过不少Rust了，加上开发Pintos的艰难历程，前面的step 0，step 1 打算尽快完成，多留点时间给后面的rCore tutorial。
 完成了rustlings中variables, functions, if部分.
 
 ## Day 1
 - rustlings
+
 完成了rustlings中primitive_types, structs, enums, tests, modules, macros, move_semantics, errors, result, option 部分。 做起来挺快的，明天再把剩下的做完估计就可以进入下一阶段了。
 
 ## Day 2
 - rustlings
 - 阅读rCore-Tutorial Lab 0
+
 threads, conversions 这两部分因为之前用的不多花的时间比较长，不过总算是把Rustlings写完了。在犹豫要不要写15道小程序题，有点想直接开始做rCore lab了。
 
 ## Day 3
 - 搭好实验环境
+
 今天把实验环境搭好了，manjaro上面和ubuntu的package manager不太一样，还要下载一个qemu-extra才能运行risc-v，不知道是不是我操作有不对的地方。实验零相当于一个hello world，平时写的c都会链接到操作系统的运行时（linux下是crt0），libc里面的malloc其实是syscall的wrapper。但这次是自己写操作系统，所以稍微要复杂一些。Rust也一样，不能用标准库std里面的utility，另外还要定义一个自己的panic handler。
 
 ## Day 4
 - 复现Lab 0
 - 阅读Learn C the Hard Way
+
 开始做lab 0和lab 1了，不过有一点不太明白，repository里面都是已经写好了的代码，并没有要填充的地方。no_std和panic handler都已经写好了，中断的时候保存寄存器还有内核栈指针的汇编也都有了，还要做些啥不太清楚。可能是因为tutorial还在更新的缘故吧。既然这样那明天先看看15道小程序题，写起来应该蛮快的。
 
 ## Day 5
 - Learn C the Hard Way * 2
+
 一天都在上课，回到寝室差不多就要睡觉了。赶紧用Rust写了两道Learn C the Hard Way的练习题。前面主要是格式化输出和变量类型，没有控制流，所以很快就写完了。
 
 ## Day 6
 - Learn C the Hard Way * 8
+
 完成了8道练习题。对于Rust语法上面没有啥理解的困难，主要是体会Rust和C Convention上的区别。以数组遍历为例，在C里面很自然的一种写法就是`for (int i = 0; i < len; i++) ...`。 但在Rust里面如果实现了Iterator这个trait的话更鼓励使用iterators，比如`for arg in std::env::args() {...}`。 最直观的好处有两个，一可读性更高了，二没有index不需要每次都做bounds check，效率变高了。按照C的写法来写Rust不是不可以，只是Bad Style。Rust是一个多范式语言，其中不少函数式编程的特性可以看到sml的影子。map, fold, filter, 还有match，以及||closure等。通常对array/vector/list等线性数据结构的元素做一些简单的操作完全没有必要写for loop，一是容易出错，二是map这样的函数更方便compiler做优化（vectorize）。Match对于乍接触Rust的C程序员来说就是switch语句，但事实上要强大的多，switch仅限于整型（char，int，long...)，而match可以destruct tuples/structs，实现了PartialEq的自定义类型可以直接match。就个人经历而言，这个解决的最大痛点就是字符串也可以match了。总之，学习过程中要注意两者的区别，不能写成Cish Rust。
 
 ## Day 7
 - Learn C the Hard Way * 5（全部完成）
+
 终于把15道练习题写完了。Learn C the Hard Way后面主要是写一些数据结构。由于Ownership系统的原因，在Rust里面写一个双向链表都是一个非常痛苦的过程。甚至有人专门出了一本书研究Rust写链表多种不同的方式。链表其实在操作系统中是一个非常重要的数据结构。pintos里面记录线程的active_list, block_list, sleep_list都是链表，链表的每个节点内嵌在thread结构体里面，这样就不需要动态分配内存了。而需要取到指向thread结构体指针的时候可以通过offset()宏计算链表节点field据结构体base的偏移量获得。当时第一次看到这种骚操作被震撼了，不得不佩服想出这种办法的人。Page Eviction中的second chance algorithm(evict by used/dirty bit)中也有用到链表。有些C的概念不能直接转换到Rust里面，比如Rust的lifetime，ownership还有array和slice。C里面的lifetime有automatic（stack上），static（全局等），还有heap上自己管理的，safe Rust的就复杂很多。C里面函数传数组(指针）往往还需要一个长度的参数，Rust则合二为一成了slice，确保不会有数组越界的情况。基于以上原因，ex8，ex22更多的参考了Rust By Example里面的练习。
 
 ## Day 8
 - 提交dbg宏pr
 - 阅读rCore-Tutorial Lab 1
+
 今天给rCore-Tutorial提交了第一个pull requst，写了一个`dbg!`macro。这个宏还是蛮有用的，可以显示行号，文件名，同时返回变量的值，自己平时用的蛮多的。rCore因为不能用标准库所以默认没有实现这个宏。实现起来也不麻烦，也就几十行，简单的在println！上面做一些包装。看了一下lab-1这个branch好像也是已经写好了的代码，没有题目…… 感觉sbi调用可以用enum包装的更好一些。比如:
 ```Rust
 enum SBICall {
@@ -100,11 +109,13 @@ impl SBICall {
 
 ## Day 9
 - 看完操作系统慕课中断部分
+
 今天又仔细看了一下step2的要求，发现自己自己的确对实验的内容理解有误。rCore-Tutorial里面是已经写好的代码，自己要独立的实现一遍，或者分析有哪些不足，提出改进。每一个实验都要有实验报告和相关的代码。其实文档写的已经很详细了，但是为了获得更系统的理解还是去看了清华2020操作系统的慕课。讲的更细一些，偏向于原理。把中断这一部分看完了。
 
 ## Day 10
 - 交流会
 - 完成 Lab 0 学习记录撰写
+
 今天的交流会开完之后感慨颇深，已经有差不多1/4的同学进行到lab4之后的学习了，更有一小部分完成了所有rCore-Tutorial实验，而自己还止步于lab 0/1。其实如果一开始就写lab的话进度应该是赶得上的，但是开始还有犹豫了一下，把前面的部分做了做。
 知道自己进度落后了就要努力追赶。今天完成了lab0的学习记录，lab1做的也差不多了。本来想一并把lab1的学习记录写了，但琢磨了一下，一天走两步可能太操之过急了。实现lab是一部分，更重要的是理解和自己的思考。因此lab0和以后的学习记录大概分为三个部分：**问题，思考，以及改进**。虽然说tutorial基本上每一步都已经spoonfed到了嘴边，但是自己写的过程中难免有些疏忽，出现一些问题。回头看看这些问题是不是自己某些概念理解有误，想当然当成了另外一种东西。思考是对tutorial中作出指示没有细讲原因的思考和拓展。仓库里的代码是直接能跑的，复制黏贴过来没有太大意义，只有尝试着进行改动或者改进才能说明真正的掌握了这一块内容。因为学习记录是帮助自己理解所以更要注重内容（自己的体悟），而没必要纠结于形式，毕竟不是为了老师写的报告。
 
@@ -118,6 +129,7 @@ impl SBICall {
 ## Day 11
 - 完成 Lab 1 实验， 学习记录
 - 在相关issue上comment了一下
+
 完成了lab 1的实验与学习报告。这一部分因为riscv这个crate包装的已经很好了，所以代码量也不是很大，逻辑很清晰。写过程中遇到了一个很有意思的问题，因为interrupt.S大部分代码其实是在保存通用寄存器，所以不是很想一行一行的敲了，把rCore-Tutorial里面的interrupt.asm复制黏贴过来。结果运行的时候遇到了store exception，看来是往禁止的地方写了东西。仔细检查发现, 在保存context之前把sp和sscratch做了交换，sp指向了后面才会实现的内核栈，因此产生了exception。复制黏贴果然是一大bug来源，以后要慎之又慎。后面按照洛佳同学提出的方法把30个SAVE合成了一个loop，干净很多。
 
 ```RISC-V
@@ -166,37 +178,53 @@ __restore:
 ## Day 12
 - 完成了 Lab 2 实验
 - 看完了操作系统慕课虚拟内存相关内容
+
 完成了lab 2实验部分，明天写报告。说实话对于PhysicalAddress这一个wrapper不是很满意，一个地址本质上就是一个usize。包装下来产生了很多boilerplate代码，对内部的usize做加减法还需要implement Add，Sub这样的trait。如果想要对usize这样的primitive实现dynamic dispatch的话，可以定义一个trait，然后为usize implement这个trait。Buddy System Allocator这一部分之前的os和算法课没有讲过，后期有空可以自己实现一个了。在教学用的toy system上面碎片化其实不是一个很大的问题，因为用的内存很少，不需要垃圾回收。lab2部分为了对FRAME_ALLOCATOR这个全局变量进行访问使用了spin::Mutex，在没有os支持下不知道是怎么实现的，很有可能是busy wait，被阻塞的线程会进入一个死循环。lazy_static的使用还不是特别清楚。
 预习了lab 3部分的实验，感觉难度上要比lab0/1大不少，还是需要多花一点功夫的。
 
 ## Day 13
 - 完成 Lab 2 学习记录
 - 预习 Lab 3 虚拟内存，页表相关内容
+
 完成了lab 2 writeup。逐渐明白kernel在内存中是怎样放置的了。从0x8000_0000开始先是OpenSBI的firmware，0x80020000会放置第一个程序，这也是为什么linker.ld里面kernel_base_address是0x80020000。kernel本身主要是两部分组成，最前面的是.text代码部分，除了我们自己写的代码之外还有Rust自己生成的一些库函数。之后是数据，.data和.rodata，都是初始值非零的变量，一个可写另一个不可写。最一部分是.bss段，虽然是.bss但并不能保证操作系统运行第一条指令时这一段内存是0。个人认为操作系统应该手动置零，但是不知道为什么现在没有置零但是依然能够正常运行。.bss段除了操作系统方便自己动态分配内存的一个堆HEAP之外还有其他的变量。用rust-objdump -x还能看到类似FRAME_ALLOCATOR被mangle后的字样。.bss段的终止地址也是kernel_end_address。物理页的分配在这之后开始，不过要对齐到4K，也就是16进制后三位是0x000。QEMU默认的dram大小是128MiB，理论上这块内存想干什么都可以。物理页可以从0x88000000开始分配，到0x87fff000，一次往前分配也是可以的。
 
 ## Day 14
 - 完成 Lab 3 实验， 学习记录
 - 预习 Lab 4
+
 完成了lab 3的实验和学习记录 。今天效率还是比较高的，实验部分tutorial里面有的是自己敲得，剩下的因为依赖声明太麻烦了，所以直接就从tutorial仓库复制黏贴过来了。感觉还是有不少可以改进的部分，不过现在的重点可能是先完成实验，把自己的想法放在了writeup“改进”的部分。entry.S里面有关相对地址和绝对地址的加载其实可以写的更简洁明了一些，明天提交一个pull request。
 
 ## Day 15
 - 跟着rCore-Tutorial过了一遍Lab 4，存在问题
 - 提交entry.S相关pr
 - issue中回复Lab 2相关问题
+
 今天尝试着在做lab 4，不是很顺利。tutorial里面的代码和仓库里面的代码还是有很多不一样的。自己修好编译错误之后操作系统就一直提示StoreFault，有很大的可能是给线程初始化页表的时候出了一些问题。下午提交了一个pr，并在issue中回答了一个关于lab2内存分配的问题。当时自己在这里也思考了很久，希望对提问题的同学有所帮助。
 
 ## Day 16
 - Debug Lab 4
 - 看完了操作系统慕课线程相关内容
+
 介于昨天lab 4进展不顺，今天看了看OS课程视频，回顾线程和进程的概念。OS设计的初衷是为了实现multitasking，最早的雏形是time sharing system。简单的来说，就是把cpu时间进行分割，分配给不同的程序（multiplex cpu time）。最容易想到的multiplexing算法是round robin，把cpu时间均分，但是这显然不够灵活，不能满足日记增长复杂的需求。并且同时运行的两个程序，他们在运行过程中不能访问重叠的地址，这意味着说为了实现多任务需要重新编译用户程序。为了应对第一个问题，OS提出了scheduler，和thread的概念，把运行中的程序抽象成thread，方便scheduler进行调度。thread随时都能够被中断，中断后能够恢复原来的状态，这里存储的状态就是Context（上下文）。为了应对第二个问题，OS提出了虚拟地址的概念，不同程序的的虚拟地址可以有重叠，但是虚拟地址最后映射到的物理地址一定是没有冲突的。每次访问内存的话都做一次翻译软件上实现会十分耗时，因此虚拟地址到物理地址的翻译就交给了硬件（mmu）。
 
 ## Day 17
 - 交流会
 - 预习 Lab 5 内容
+
 Lab 4 debug不是很成功。明天不打算硬磕了，先放一下，开始后面的Lab学习。Lab 5是设备树的初始化与文件系统，其实大部分文件系统的逻辑已经在rCore-fs上实现了，我们所要做的就是调用它。另外后面的实验题也出来了，还是先把实验指导的内容完成在考虑后面的吧。今天的会议上看到了别的同学的每日记录，坦诚地来讲要细致很多，自己在这方面还有提升的空间，把之前的记录分条整理整理。
 
 ## Day 18
 - 修复 Lab 4 之前实验中的bug
 - 完成 Lab 4 学习记录书写
 - 开始 Lab 5 实验（部分）
+
 Lab 4 的实验和学习记录书写完成。之前的问题好像出在了add_segment函数上面了。为了和教程匹配, 把init_data这一项参数删去了，因为本来从alloc_page_range传进来的时候就是None，没有用上。可能删的时候不小心把物理页分配相关的代码页删去了。导致往栈上读写数据的时候会有Store/LoadFault。最后的解决办法是把rCore-Tutorial lab-4分支memory文件夹覆盖了过来，重新搞好依赖声明。之前做的修改全都没有了，后面等所有lab完成之后再改吧。Lab 5的代码量不是很大，今天也已经完成了一部分，文件系统因为是调用外部的crate，只有寥寥几行，重点是理解virtio以及设备树的遍历。
+
+## Day 19
+- 完成 Lab 5 实验，学习记录
+- 整理DailySchedule
+    - 跳转到具体某一天的日历
+    - 各个step成果汇总
+- 添加step0，step1为submodule
+
+相比于做Lab 4时的艰难，Lab 5实现的整个过程就很顺畅，基本上没有遇到什么问题。因为很快就把实验内容和学习记录写完了，剩下的时间回顾了一下这三个周学习rCore的成果，还是比较有收获的。在DailySchedule里面添加了日历和汇总，方便别的同学查看。同时在每天的记录里面分条呈现当日跟rCore相关的事件。整理完之后结构清晰了不少。
