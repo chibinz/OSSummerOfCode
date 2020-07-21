@@ -14,20 +14,20 @@
     - [Rustlings](step0/rustlings)
     - [15道小编程题](step0/15_programming_exercise)
 - Step 1 RISC-V ISA 学习
-    - RV32I 解释器/模拟器
-    - 用logisim实现一个简单的RISC-V CPU
+    - [RV32I 解释器/模拟器](step1/project/p1_emulator)
+    - [用logisim实现一个简单的RISC-V CPU](step1/project/p2_simulator)
         - ALU
         - Register File
         - Control Unit
         - etc.
     - 阅读RISC-V Privileged ISA Specification
 - Step 2 rCore-Tutorial 实验
-    - Lab 0
-    - Lab 1
-    - Lab 2
-    - Lab 3
-    - Lab 4
-    - Lab 5
+    - [Lab 0](step2/doc/lab0.md)
+    - [Lab 1](step2/doc/lab1.md)
+    - [Lab 2](step2/doc/lab2.md)
+    - [Lab 3](step2/doc/lab3.md)
+    - [Lab 4](step2/doc/lab4.md)
+    - [Lab 5](step2/doc/lab5.md)
 
 ## Day 0 7.2
 - 正式入群
