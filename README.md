@@ -261,3 +261,7 @@ Lab 4 的实验和学习记录书写完成。之前的问题好像出在了add_s
 - 整理daily schedule
 - 预习zCore
 本来还想再readme里面对于repository做一些说明，干脆把daily schedule搬到了readme里面。
+
+## Day 24
+- 阅读fuchsia官方文档中关于zircon kernel的文档
+官方文档基本上描述的是What，how但是没有说why。kernel object的设计和传统的unix 理念不太一样。这一部分还是不太明白。可能需要再搜一搜，读一读王润基学长的theisis。
