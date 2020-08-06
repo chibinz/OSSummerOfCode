@@ -287,3 +287,40 @@ Lab 4 的实验和学习记录书写完成。之前的问题好像出在了add_s
 
 ## Day 3
 上午初步完成了对文档工作的分工，我负责的是虚拟内存。代码主要是位于zircon-object/vm/vmar.rs文件里面。大概有1000多行，数量上还是不少的。但是实现过一遍rCore-Tutorial，vmar可以大概类比memory_set,包含了进程大部分的内存管理信息。详细阅读了一遍fucshia.dev中concept和reference section中关于memory management的描述。之后和王润基学长讨论一下这部分代码，印证了一些自己的想法，学长还对代码中的一些写法做出了解释。下午参观了RIOS实验室，得到了一些关于PicoRio开发情况的信息。还是蛮期待的，不过距离板子出来可能还有一段时间。晚上请的是sipeed的工程师给我们做k210的介绍，后来发现他们做产品的初衷可能和我们的focus不太一样，maixpy的主要目标客户是STEAM（Science，Technology……）领域，需要高层次的抽象和封装，只暴露方便好用的接口就行了，具体硬件实现不需要关心。而我们的侧重点则恰恰相反，os本身就需要对硬件资源进行抽象和管理。不过作为一个pioneer做成这样已经不错了，更何况性价比这么高。
+
+## Day 4
+上午和向老师进行了座谈，对于文档完善过程中的一些细节进行了讨论。文档的完善主要分为两个部分，一个是在zCore代码中直接嵌入注释和单元测试；二是对于zCore的某一部分（我分到的是虚拟内存）进行分析和记录，作为后期整合到简明zCore教程中的一个模本。第一部分在阅读代码的过程中顺道完成，第二部分需要对于模块的代码文档进行记录和深入思考，把思绪梳理成一个文档。明天需要对这几天的讨论结果做一个报告，又是报告……好多啊……简单分点列一下吧
+
+### Deliverables
+- unit test
+    - coverage 90%
+- inline doc
+    - pass `#[deny(missing_doc)]`
+    - related files
+        - zircon-object/src/vm/vmar.rs
+        - zircon-syscall/src/vmar.rs
+        - etc.
+- tutorial/notes
+    - synopsis
+    - dependencies/dependents
+    -
+
+- Timeline
+    - week 1
+        - finish inline docs
+    - week 2
+        - all unit test coverage > 90%
+        - first draft tutorial complete
+        - communicate with partner to propose a wrap up section
+    - week 3
+        - polish draft tutorial
+        - 8.28
+        - everything should be done by then
+        - 8.28 ~ 8.31
+        - buffer for wrap up work
+
+- Reach out goal
+    - Refactor zCore code along way
+    - Organize notes as tutorial
+    - Descriptive -> Procedural
+    - What, How -> Why
