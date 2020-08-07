@@ -324,3 +324,7 @@ Lab 4 的实验和学习记录书写完成。之前的问题好像出在了add_s
     - Organize notes as tutorial
     - Descriptive -> Procedural
     - What, How -> Why
+
+
+## Day 5
+Hackathon 愉快的结束了！Yeah！
