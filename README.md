@@ -1,5 +1,5 @@
-# rCoreSummerOfCode
-Code, Documentation, and Daily Record for rCore Summer of Code 2020
+# OSCoreSummerOfCode
+Code, Documentation, and Daily Record for OS Summer of Code 2020
 
 ## 日历
 | Mon  | Tues | Wed  | Thur | Fri  | Sat  | Sun  |
